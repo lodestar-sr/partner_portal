@@ -1,0 +1,163 @@
+<div class="loading-container" *ngIf="loading">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+<p-table
+  *ngIf="!loading"
+  stripedRows
+  [columns]="selectedColumns"
+  [value]="displayedPartners"
+  [paginator]="false"
+  [rows]="16"
+  [first]="first"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  (onPage)="pageChange($event)"
+  paginatorStyleClass="paginator"
+  showFirstLastIcon="false"
+>
+  <ng-template #caption>
+    <div class="datepicker-custom">
+      <label for="on_label" class="label-datepicker">
+        <i class="pi pi-calendar-minus"></i>
+      </label>
+      <p-datepicker
+        [(ngModel)]="rangeDates"
+        selectionMode="range"
+        [readonlyInput]="true"
+        class="custom-datepicker"
+        dateFormat="M dd, yy"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        inputId="on_label"
+      >
+        <ng-template #inputicon let-clickCallBack="clickCallBack">
+          <i class="pi pi-caret-down" (click)="clickCallBack($event)"></i>
+        </ng-template>
+      </p-datepicker>
+    </div>
+    <div class="group-btn">
+      <p-multiselect
+        [options]="cols"
+        optionLabel="name"
+        [(ngModel)]="selectedColumns"
+        selectedItemsLabel="Choose Columns"
+        [style]="{ 'min-width': '200px' }"
+        placeholder="Choose Columns"
+        styleClass="p-button-rounded p-button-info"
+      >
+        <ng-template pTemplate="dropdownicon">
+          <i class="pi pi-table"></i>
+        </ng-template>
+      </p-multiselect>
+      <p-toast />
+      <p-button
+        label="MessagePartners"
+        (click)="showSuccess(messageEmail)"
+        icon="pi pi-envelope"
+        iconPos="right"
+        [rounded]="true"
+        severity="info"
+      />
+      <p-button
+        label="Export List"
+        (click)="showSuccess(messageExport)"
+        icon="pi pi-download"
+        iconPos="right"
+        [rounded]="true"
+        severity="info"
+      />
+    </div>
+  </ng-template>
+  <ng-template #header let-columns>
+    <tr>
+      <th
+        *ngFor="let col of columns"
+        (click)="toggleSort(col)"
+        [style.cursor]="'pointer'"
+        [style.width]="col.width"
+        pSortableColumn="{{ col.field }}"
+        class="header-custom"
+      >
+        {{ col.name }}
+        <span *ngIf="col.field">
+          <i *ngIf="col.sortOrder === 1" class="pi pi-sort-amount-up"></i>
+          <i *ngIf="col.sortOrder === -1" class="pi pi-sort-amount-down"></i>
+          <i
+            *ngIf="!col.sortOrder || col.sortOrder === 0"
+            class="pi pi-sort"
+          ></i>
+        </span>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-partner let-columns="columns">
+    <tr>
+      <td *ngFor="let col of columns">
+        <ng-container *ngIf="partner?.[col.field]; else showButton">
+          {{ partner[col.field] }}
+        </ng-container>
+        <ng-template #showButton>
+          <p-button
+            styleClass="btn-detail"
+            label="Detail"
+            icon="pi pi-list"
+            iconPos="left"
+            severity="info"
+            rounded
+          ></p-button>
+        </ng-template>
+      </td>
+      <td></td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<div class="custom-paginator-container">
+  <div class="paginator-text">
+    Showing {{ first + 1 }} to
+    {{ first + rows > partners.length ? partners.length : first + rows }}
+    of {{ partners.length }} entries
+  </div>
+
+  <p-paginator
+    [rows]="rows"
+    [first]="first"
+    [totalRecords]="partners.length"
+    (onPageChange)="pageChange($event)"
+    showFirstLastIcon="false"
+    styleClass="custom-paginator"
+  >
+    <ng-template pTemplate="paginatorRight">
+      <div class="paginator-controls">
+        <button
+          type="button"
+          class="p-paginator-prev"
+          [disabled]="first === 0"
+          (click)="goToPage(first - rows)"
+        >
+          <i class="pi pi-angle-left"></i>
+        </button>
+
+        <span class="page-numbers">
+          <button
+            *ngFor="let page of getPages(); let i = index"
+            type="button"
+            class="p-paginator-page"
+            [ngClass]="{ 'p-paginator-page-selected': first === page * rows }"
+            (click)="goToPage(page * rows)"
+          >
+            {{ page + 1 }}
+          </button>
+        </span>
+
+        <button
+          type="button"
+          class="p-paginator-next"
+          [disabled]="first + rows >= partners.length"
+          (click)="goToPage(first + rows)"
+        >
+          <i class="pi pi-angle-right"></i>
+        </button>
+      </div>
+    </ng-template>
+  </p-paginator>
+</div>

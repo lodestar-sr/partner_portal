@@ -1,0 +1,17 @@
+@import "primeicons/primeicons.css";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  zoom: 80%;
+  overflow: hidden;
+}
