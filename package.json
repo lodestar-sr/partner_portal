@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:partner-portal-page": "node dist/partner-portal-page/server/server.mjs"
+    "serve:ssr:partner-portal-page": "node dist/partner-portal-page/server/server.mjs",
+    "build:deploy": "npx ng build --base-href https://lodestar-sr.github.io/partner_portal/",
+    "deploy": "npm run build:deploy && npx angular-cli-ghpages --dir=dist/partner-portal-page/browser"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +23,7 @@
     "@angular/router": "^19.2.0",
     "@angular/ssr": "^19.2.0",
     "@primeng/themes": "^19.0.9",
+    "angular-cli-ghpages": "^2.0.3",
     "express": "^4.18.2",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.9",
